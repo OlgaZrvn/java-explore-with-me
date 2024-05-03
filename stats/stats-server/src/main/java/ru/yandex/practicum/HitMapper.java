@@ -7,5 +7,5 @@ public interface HitMapper {
 
     Hit toHit(EndpointHit endpointHit);
 
-    EndpointHit toHitDto (Hit hit);
+    EndpointHit toHitDto(Hit hit);
 }
