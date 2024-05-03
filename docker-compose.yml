@@ -9,7 +9,7 @@ services:
     depends_on:
       - stats-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/ewmstats
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://stats-db:5432/stats
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
@@ -24,23 +24,23 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=ewmstats
 
-  ewm-service:
-    build: ewm-service
+  main-service:
+    build: main-service
     image: ewm-service-image
-    container_name: ewm-service-container
+    container_name: main-service-container
     ports:
       - "8080:8080"
     depends_on:
-      - ewm-db
+      - main-db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://ewm-db:5432/ewmservice
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://main-db:5432/service
       - SPRING_DATASOURCE_USERNAME=root
       - SPRING_DATASOURCE_PASSWORD=root
       - SPRING_DRIVER_CLASS_NAME=org.postgresql.Driver
 
-  ewm-db:
+  main-db:
     image: postgres:14-alpine
-    container_name: ewm-db-container
+    container_name: main-db-container
     ports:
       - "6542:5432"
     environment:
