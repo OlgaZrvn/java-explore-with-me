@@ -17,10 +17,10 @@ import java.util.Map;
 
 @Service
 public class StatsClient {
-    private final RestTemplate rest;
+    private final RestTemplate restTemplate;
 
     public StatsClient(@Value("http://localhost:9090") String statsServerUrl, RestTemplateBuilder builder) {
-        this.rest = builder
+        this.restTemplate = builder
                 .uriTemplateHandler(new DefaultUriBuilderFactory(statsServerUrl))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build();
@@ -57,9 +57,9 @@ public class StatsClient {
         ResponseEntity<Object> statsServerResponse;
         try {
             if (parameters != null) {
-                statsServerResponse = rest.exchange(path, method, requestEntity, Object.class, parameters);
+                statsServerResponse = restTemplate.exchange(path, method, requestEntity, Object.class, parameters);
             } else {
-                statsServerResponse = rest.exchange(path, method, requestEntity, Object.class);
+                statsServerResponse = restTemplate.exchange(path, method, requestEntity, Object.class);
             }
         } catch (HttpStatusCodeException e) {
             return ResponseEntity.status(e.getStatusCode()).body(e.getResponseBodyAsByteArray());

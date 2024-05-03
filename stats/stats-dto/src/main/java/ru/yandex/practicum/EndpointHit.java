@@ -17,5 +17,5 @@ public class EndpointHit {
     private String ip;
     @NotNull(message = "Дата и время запроса не могут быть пустыми.")
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime date;
+    private LocalDateTime timestamp;
 }
