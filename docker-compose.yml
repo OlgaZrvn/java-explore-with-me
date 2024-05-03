@@ -24,7 +24,7 @@ services:
       - POSTGRES_USER=root
       - POSTGRES_DB=stats
 
-  main-service:
+  ewm-service:
     build: main-service
     image: main-service-image
     container_name: main-service-container
