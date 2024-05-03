@@ -22,11 +22,11 @@ services:
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
-      - POSTGRES_DB=ewmstats
+      - POSTGRES_DB=stats
 
   main-service:
     build: main-service
-    image: ewm-service-image
+    image: main-service-image
     container_name: main-service-container
     ports:
       - "8080:8080"
@@ -46,4 +46,4 @@ services:
     environment:
       - POSTGRES_PASSWORD=root
       - POSTGRES_USER=root
-      - POSTGRES_DB=ewmservice
+      - POSTGRES_DB=service
