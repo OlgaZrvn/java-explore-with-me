@@ -20,14 +20,10 @@ public class StatsController {
     }
 
     @GetMapping("/stats")
-    public List<ViewStats> getStats(@RequestParam
-                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                            LocalDateTime start,
-                                            @RequestParam
-                                            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-                                            LocalDateTime end,
-                                            @RequestParam (required = false) List<String> uris,
-                                            @RequestParam (defaultValue = "false") Boolean unique) {
+    public List<ViewStats> getStats(@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime start,
+                                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime end,
+                                    @RequestParam (required = false) List<String> uris,
+                                    @RequestParam (defaultValue = "false") Boolean unique) {
         if (start.isAfter(end)) {
             throw new ValidationException("Дата начала должна быть раньше даты конца.");
         }
