@@ -36,18 +36,14 @@ public class EventController {
                                                 HttpServletRequest request) {
 
         List<EventShortDto> events = eventService.getEventByFilter(text, categories, paid,
-                rangeStart,
-                rangeEnd,
-                onlyAvailable, sort,
-                from / size, size);
-        EndpointHit endpointHit = new EndpointHit("main-service", request.getRequestURI(), request.getRemoteAddr(),
-                LocalDateTime.now());
-        statsClient.addHit(endpointHit);
+                rangeStart, rangeEnd, onlyAvailable, sort, from / size, size);
+        statsClient.addHit(new EndpointHit("main-service", request.getRequestURI(), request.getRemoteAddr(),
+                LocalDateTime.now()));
         return events;
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getPublicEventById(@PathVariable Integer id, HttpServletRequest request) {
+    public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request) {
         EventFullDto event = eventService.getPublicEventById(id);
         statsClient.addHit(new EndpointHit("main-service", request.getRequestURI(), request.getRemoteAddr(),
                 LocalDateTime.now()));

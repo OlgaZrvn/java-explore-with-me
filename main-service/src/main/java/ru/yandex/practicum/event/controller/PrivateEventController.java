@@ -3,10 +3,7 @@ package ru.yandex.practicum.event.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.event.EventFullDto;
-import ru.yandex.practicum.event.EventShortDto;
-import ru.yandex.practicum.event.NewEventDto;
-import ru.yandex.practicum.event.UpdateEventAdminRequest;
+import ru.yandex.practicum.event.*;
 import ru.yandex.practicum.event.service.EventService;
 import ru.yandex.practicum.request.EventRequestStatusUpdateRequest;
 import ru.yandex.practicum.request.EventRequestStatusUpdateResult;
@@ -46,8 +43,8 @@ public class PrivateEventController {
     @PatchMapping("/{eventId}")
     public EventFullDto updateEventByUserId(@PathVariable Integer userId,
                                             @PathVariable Integer eventId,
-                                            @Valid @RequestBody UpdateEventAdminRequest dto) {
-        return eventService.updateEventByUserId(userId, eventId, dto);
+                                            @Valid @RequestBody UpdateEventUserRequest event) {
+        return eventService.updateEventByUserId(userId, eventId, event);
     }
 
     @GetMapping("/{eventId}/requests")

@@ -22,7 +22,7 @@ public class Event {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-   // @Column(length = 1000)
+    @Column(length = 1000)
     private String annotation;
     @OneToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id")
@@ -31,7 +31,7 @@ public class Event {
     private Integer confirmedRequests;
     @Column(name = "created_on")
     private LocalDateTime createdOn;
-   // @Column(length = 2000)
+    @Column(length = 2000)
     private String description;
     @Column(name = "event_date")
     private LocalDateTime eventDate;
@@ -54,4 +54,18 @@ public class Event {
     @Size(min = 3, max = 120)
     private String title;
     private Long views;
+
+    public Event(String annotation, Category category, String description, LocalDateTime eventDate, User initiator, Location location, Boolean paid, int participantLimit, boolean requestModeration, String title) {
+        this.annotation = annotation;
+        this.category = category;
+        this.createdOn = LocalDateTime.now();
+        this.description = description;
+        this.eventDate = eventDate;
+        this.initiator = initiator;
+        this.location = location;
+        this.paid = paid;
+        this.participantLimit = participantLimit;
+        this.requestModeration = requestModeration;
+        this.title = title;
+    }
 }

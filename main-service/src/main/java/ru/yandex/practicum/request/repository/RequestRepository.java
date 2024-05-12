@@ -18,7 +18,6 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
             "group by r.event.id")
     List<ConfirmedRequest> findConfirmedRequest(List<Integer> eventsIds);
 
-
     Long countByEventIdAndStatus(Integer eventId, RequestStatus status);
 
     List<Request> findAllByEventId(Integer eventId);

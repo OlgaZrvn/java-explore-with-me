@@ -11,6 +11,7 @@ import ru.yandex.practicum.category.CategoryMapper;
 import ru.yandex.practicum.category.NewCategoryDto;
 import ru.yandex.practicum.category.repository.CategoryRepository;
 import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
 import ru.yandex.practicum.exception.ValidationException;
 
@@ -40,10 +41,11 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryMapper.toCategoryDto(category);
     }
 
+    @Transactional
     @Override
     public CategoryDto addCategory(NewCategoryDto newCategoryDto) {
         if (categoryRepository.existsCategoryByName(newCategoryDto.getName())) {
-            throw new ValidationException("Категория уже существует");
+            throw new ConflictException("Категория уже существует");
         }
         if (newCategoryDto.getName().isBlank()) {
             throw new ValidationException("Имя категории не может быть пустым");
@@ -57,7 +59,7 @@ public class CategoryServiceImpl implements CategoryService {
             throw new NotFoundException("Категория не найдена");
         }
         if (eventRepository.existsByCategoryId(catId)) {
-            throw new ValidationException("Событие еще не удалено");
+            throw new ConflictException("Событие еще не удалено");
         }
         categoryRepository.deleteById(catId);
     }
@@ -72,7 +74,7 @@ public class CategoryServiceImpl implements CategoryService {
                 new NotFoundException("Категория не найдена"));
         if (!updateCategory.getName().equals(dto.getName()) &&
                 categoryRepository.existsCategoryByName(dto.getName())) {
-            throw new ValidationException("Категория с таким именем уже существует");
+            throw new ConflictException("Категория уже существует");
         }
         updateCategory.setName(dto.getName());
         return categoryMapper.toCategoryDto(categoryRepository.save(updateCategory));

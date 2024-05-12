@@ -3,11 +3,12 @@ package ru.yandex.practicum.user.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.user.NewUserRequest;
+import ru.yandex.practicum.user.User;
 import ru.yandex.practicum.user.UserMapper;
-import ru.yandex.practicum.user.UserShortDto;
 import ru.yandex.practicum.user.repository.UserRepository;
 
 import java.util.List;
@@ -20,21 +21,24 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
 
     @Override
-    public List<UserShortDto> getUsersByIds(List<Integer> ids, int from, int size) {
+    public List<User> getUsersByIds(List<Integer> ids, int from, int size) {
         if (ids.isEmpty()) {
-            return userRepository.findAll(PageRequest.of(from, size)).stream()
-                    .map(userMapper::toUserShortDto).collect(Collectors.toList());
+            return userRepository.findAll(PageRequest.of(from, size))
+                    .stream()
+                    .collect(Collectors.toList());
         }
-        return userRepository.findAllByIdIn(ids, PageRequest.of(from, size)).stream()
-                .map(userMapper::toUserShortDto).collect(Collectors.toList());
+        return userRepository.findAllByIdIn(ids, PageRequest.of(from, size))
+                .stream()
+                .collect(Collectors.toList());
     }
 
+    @Transactional
     @Override
-    public UserShortDto addNewUser(NewUserRequest user) {
+    public User addNewUser(NewUserRequest user) {
         if (userRepository.existsUserByEmail(user.getEmail())) {
-            throw new ValidationException("Пользователь с таким email уже существует");
+            throw new ConflictException("Пользователь с таким email уже существует");
         }
-        return userMapper.toUserShortDto(userRepository.save(userMapper.toUser(user)));
+        return userRepository.save(userMapper.toUser(user));
     }
 
     @Override

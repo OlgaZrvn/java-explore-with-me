@@ -1,6 +1,5 @@
 package ru.yandex.practicum.event.service;
 
-import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.event.*;
 import ru.yandex.practicum.request.EventRequestStatusUpdateRequest;
 import ru.yandex.practicum.request.EventRequestStatusUpdateResult;
@@ -14,12 +13,9 @@ public interface EventService {
                                          LocalDateTime rangeEnd, Boolean onlyAvailable, String sort,
                                          Integer from, Integer size);
 
-    EventFullDto getEventById(Integer id);
-
     List<EventFullDto> getEventsForAdmin(List<Integer> users, List<EventState> states, List<Integer> categories,
                                          LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size);
 
-    @Transactional
     EventFullDto getPublicEventById(Integer id);
 
     EventFullDto updateEventByIdAdmin(Integer eventId, UpdateEventAdminRequest dto);
@@ -30,8 +26,7 @@ public interface EventService {
 
     EventFullDto getEventByUserId(Integer userId, Integer eventId);
 
-    @Transactional
-    EventFullDto updateEventByUserId(Integer userId, Integer eventId, UpdateEventAdminRequest dto);
+    EventFullDto updateEventByUserId(Integer userId, Integer eventId, UpdateEventUserRequest dto);
 
     List<ParticipationRequestDto> getAllRequestsByUserAndEvent(Integer userId, Integer eventId);
 

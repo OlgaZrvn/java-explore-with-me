@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.compilation.*;
 import ru.yandex.practicum.compilation.repository.CompilationRepository;
 import ru.yandex.practicum.event.Event;
@@ -43,11 +44,16 @@ public class CompilationServiceImpl implements CompilationService {
         return compilationMapper.toCompilationDto(compilation);
     }
 
+    @Transactional
     @Override
     public CompilationDto addCompilation(NewCompilationDto dto) {
         Compilation compilation = new Compilation();
         compilation.setTitle(dto.getTitle());
-        compilation.setPinned(dto.getPinned());
+        if (null != dto.getPinned()) {
+            compilation.setPinned(dto.getPinned());
+        } else {
+            compilation.setPinned(false);
+        }
         List<Integer> eventsId = dto.getEvents();
         if (eventsId != null) {
             List<Event> events = eventRepository.findAllById(eventsId);
@@ -62,6 +68,7 @@ public class CompilationServiceImpl implements CompilationService {
         compilationRepository.deleteById(compId);
     }
 
+    @Transactional
     @Override
     public CompilationDto updateCompilation(Integer compId, UpdateCompilationRequest compilation) {
         Compilation compilationFromDb = compilationRepository.findById(compId).orElseThrow(
@@ -80,5 +87,4 @@ public class CompilationServiceImpl implements CompilationService {
         Compilation updated = compilationRepository.save(compilationFromDb);
         return compilationMapper.toCompilationDto(updated);
     }
-
 }

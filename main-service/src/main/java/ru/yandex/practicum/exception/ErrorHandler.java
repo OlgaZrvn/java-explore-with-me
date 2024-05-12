@@ -35,4 +35,13 @@ public class ErrorHandler {
                 e.getMessage()
         );
     }
+
+    @ExceptionHandler
+    @ResponseStatus (code = HttpStatus.CONFLICT)
+    public ErrorResponse handleConflictException(final ConflictException e) {
+        log.info("Код ответа {}", HttpStatus.CONFLICT);
+        return new ErrorResponse(
+                e.getMessage()
+        );
+    }
 }

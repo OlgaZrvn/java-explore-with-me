@@ -6,8 +6,8 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.event.Event;
 import ru.yandex.practicum.event.EventState;
 import ru.yandex.practicum.event.repository.EventRepository;
+import ru.yandex.practicum.exception.ConflictException;
 import ru.yandex.practicum.exception.NotFoundException;
-import ru.yandex.practicum.exception.ValidationException;
 import ru.yandex.practicum.request.ParticipationRequestDto;
 import ru.yandex.practicum.request.Request;
 import ru.yandex.practicum.request.RequestMapper;
@@ -53,28 +53,29 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
+    @Transactional
     public ParticipationRequestDto updateRequest(Integer userId, Integer requestId) {
         Request request = requestRepository.findById(requestId).orElseThrow(() -> new NotFoundException("Запрос не найден"));
         request.setStatus(RequestStatus.CANCELED);
         return RequestMapper.toParticipationRequestDto(requestRepository.save(request));
     }
 
-    private void validateRequest(User requestor, Event event) {
-        if (requestor.getId().equals(event.getInitiator().getId())) {
-            throw new ValidationException("Инициатор события не может быть его участником");
+    private void validateRequest(User requester, Event event) {
+        if (requester.getId().equals(event.getInitiator().getId())) {
+            throw new ConflictException("Инициатор события не может быть его участником");
         }
-        List<Request> requests = requestRepository.findAllByEventIdAndRequesterId(event.getId(), requestor.getId());
+        List<Request> requests = requestRepository.findAllByEventIdAndRequesterId(event.getId(), requester.getId());
         if (!requests.isEmpty()) {
-            throw new ValidationException("Заявка уже существует");
+            throw new ConflictException("Заявка уже существует");
         }
         if (!(event.getState() == EventState.PUBLISHED)) {
-            throw new ValidationException("Заявку можно создать только для опубликованного события");
+            throw new ConflictException("Заявку можно создать только для опубликованного события");
         }
         if (event.getParticipantLimit() > 0) {
             Long participants = requestRepository.countByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
             Integer limit = event.getParticipantLimit();
             if (participants >= limit) {
-                throw new ValidationException("Достигнуто максимальное количество заявок");
+                throw new ConflictException("Достигнуто максимальное количество заявок");
             }
         }
     }
