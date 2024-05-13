@@ -55,7 +55,7 @@ public class Event {
     private String title;
     private Long views;
 
-    public Event(String annotation, Category category, String description, LocalDateTime eventDate, User initiator, Location location, Boolean paid, int participantLimit, boolean requestModeration, String title) {
+ /*   public Event(String annotation, Category category, String description, LocalDateTime eventDate, User initiator, Location location, Boolean paid, int participantLimit, boolean requestModeration, String title) {
         this.annotation = annotation;
         this.category = category;
         this.createdOn = LocalDateTime.now();
@@ -68,4 +68,6 @@ public class Event {
         this.requestModeration = requestModeration;
         this.title = title;
     }
+
+  */
 }

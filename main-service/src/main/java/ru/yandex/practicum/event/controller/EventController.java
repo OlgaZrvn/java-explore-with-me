@@ -2,9 +2,8 @@ package ru.yandex.practicum.event.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.EndpointHit;
-import ru.yandex.practicum.StatsClient;
 import ru.yandex.practicum.event.EventFullDto;
 import ru.yandex.practicum.event.EventShortDto;
 import ru.yandex.practicum.event.service.EventService;
@@ -17,11 +16,10 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@Validated
 @RequestMapping(path = "/events")
 public class EventController {
-
     private final EventService eventService;
-    private final StatsClient statsClient;
 
     @GetMapping
     public List<EventShortDto> getEventByFilter(@RequestParam(required = false, defaultValue = "") String text,
@@ -31,22 +29,15 @@ public class EventController {
                                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                                 @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                 @RequestParam(defaultValue = "EVENT_DATE") String sort,
-                                                @PositiveOrZero @RequestParam(defaultValue = "0") Integer from,
-                                                @Positive @RequestParam(defaultValue = "10") Integer size,
+                                                @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") int from,
+                                                @Positive @RequestParam(name = "size", defaultValue = "10") int size,
                                                 HttpServletRequest request) {
-
-        List<EventShortDto> events = eventService.getEventByFilter(text, categories, paid,
-                rangeStart, rangeEnd, onlyAvailable, sort, from / size, size);
-        statsClient.addHit(new EndpointHit("main-service", request.getRequestURI(), request.getRemoteAddr(),
-                LocalDateTime.now()));
-        return events;
+        return eventService.getEventByFilter(text, categories, paid,
+                rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
     }
 
     @GetMapping("/{id}")
     public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request) {
-        EventFullDto event = eventService.getPublicEventById(id);
-        statsClient.addHit(new EndpointHit("main-service", request.getRequestURI(), request.getRemoteAddr(),
-                LocalDateTime.now()));
-        return event;
+        return eventService.getPublicEventById(id, request);
     }
 }
