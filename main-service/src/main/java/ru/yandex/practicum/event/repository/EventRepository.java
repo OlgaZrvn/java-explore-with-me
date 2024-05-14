@@ -35,27 +35,29 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
     List<Event> findAllByInitiatorId(Integer userId, PageRequest of);
 
     @Query("select e " +
-            "from Event e " +
-            "where (e.state = :state) " +
-            "and ((lower(e.annotation) like lower(concat('%', :text, '%')) or lower(e.description) like lower(concat('%', :text, '%')) or :text is null) " +
-            "or :text IS null) " +
-            "and (e.category.id in :categories or :categories is null) " +
-            "and (e.paid=:paid or :paid is null) " +
-            "and (e.eventDate between :rangeStart and :rangeEnd) " +
-            "and (e.confirmedRequests <= e.participantLimit)")
+            "FROM Event e " +
+            "WHERE (e.state = 'PUBLISHED') " +
+            "AND (upper(e.annotation) like upper(concat('%', :text, '%')) OR upper(e.description) like upper(concat('%', :text, '%')) " +
+            "OR :text IS null) " +
+            "AND (e.category.id IN :categories OR :categories IS null) " +
+            "AND (e.paid = :paid OR :paid IS null) " +
+            "AND (e.eventDate > :rangeStart OR CAST(:rangeStart AS LocalDateTime) IS null) " +
+            "AND (e.eventDate < :rangeEnd OR CAST(:rangeEnd AS LocalDateTime) IS null) " +
+            "AND (e.confirmedRequests <= e.participantLimit)")
     List<Event> findAllByFilterIsAvailable(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart,
-                                           LocalDateTime rangeEnd, EventState state, Pageable pageable);
+                                           LocalDateTime rangeEnd, Pageable pageable);
 
     @Query("select e " +
-            "from Event e " +
-            "where (e.state = :state) " +
-            "and ((lower(e.annotation) like lower(concat('%', :text, '%')) or lower(e.description) like lower(concat('%', :text, '%')) or :text is null) " +
-            "or :text IS null) " +
-            "and (e.category.id in :categories or :categories is null) " +
-            "and (e.paid=:paid or :paid is null) " +
-            "and (e.eventDate between :rangeStart and :rangeEnd)")
+            "FROM Event e " +
+            "WHERE (e.state = 'PUBLISHED') " +
+            "AND (upper(e.annotation) like upper(concat('%', :text, '%')) OR upper(e.description) like upper(concat('%', :text, '%')) " +
+            "OR :text IS null) " +
+            "AND (e.category.id IN :categories OR :categories IS null) " +
+            "AND (e.paid = :paid OR :paid IS null) " +
+            "AND (e.eventDate > :rangeStart OR CAST(:rangeStart AS LocalDateTime) IS null) " +
+            "AND (e.eventDate < :rangeEnd OR CAST(:rangeEnd AS LocalDateTime) IS null)")
     List<Event> findAllByFilterNotAvailable(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart,
-                                            LocalDateTime rangeEnd, EventState state, Pageable pageable);
+                                            LocalDateTime rangeEnd, Pageable pageable);
 
     @Query("SELECT e " +
             "FROM Event e " +

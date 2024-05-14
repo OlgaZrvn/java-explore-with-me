@@ -54,7 +54,6 @@ public class EventServiceImpl implements EventService {
     public List<EventShortDto> getEventByFilter(HttpServletRequest request, String text, List<Integer> categories,
                                                 Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
                                                 Boolean onlyAvailable, String sort, int from, int size) {
-        log.info("size = {}", size);
         Pageable pageable = PageRequest.of(from, size);
 
         List<Event> events;
@@ -74,9 +73,9 @@ public class EventServiceImpl implements EventService {
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
         if (onlyAvailable) {
-            events = eventRepository.findAllByFilterIsAvailable(text, categories, paid, rangeStart, rangeEnd, EventState.PUBLISHED, pageable);
+            events = eventRepository.findAllByFilterIsAvailable(text, categories, paid, rangeStart, rangeEnd, pageable);
         } else {
-            events = eventRepository.findAllByFilterNotAvailable(text, categories, paid, rangeStart, rangeEnd, EventState.PUBLISHED, pageable);
+            events = eventRepository.findAllByFilterNotAvailable(text, categories, paid, rangeStart, rangeEnd, pageable);
         }
 
         sendStatistic(request.getRemoteAddr(), request.getRequestURI());
@@ -95,7 +94,7 @@ public class EventServiceImpl implements EventService {
 
     private void sendStatistic(String ip, String uri) {
         EndpointHit endpointHit = new EndpointHit();
-        endpointHit.setApp("ewm-service");
+        endpointHit.setApp("main-service");
         endpointHit.setUri(uri);
         endpointHit.setIp(ip);
         endpointHit.setTimestamp(LocalDateTime.parse(LocalDateTime.now()
