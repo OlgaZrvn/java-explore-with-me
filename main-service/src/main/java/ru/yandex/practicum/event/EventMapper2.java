@@ -2,9 +2,7 @@ package ru.yandex.practicum.event;
 
 import lombok.AllArgsConstructor;
 import ru.yandex.practicum.category.Category;
-import ru.yandex.practicum.category.CategoryMapper;
 import ru.yandex.practicum.user.User;
-import ru.yandex.practicum.user.UserMapper;
 
 import java.time.LocalDateTime;
 
