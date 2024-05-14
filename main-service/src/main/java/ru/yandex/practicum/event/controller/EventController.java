@@ -22,7 +22,8 @@ public class EventController {
     private final EventService eventService;
 
     @GetMapping
-    public List<EventShortDto> getEventByFilter(@RequestParam(required = false, defaultValue = "") String text,
+    public List<EventShortDto> getEventByFilter(HttpServletRequest request,
+                                                @RequestParam(required = false, defaultValue = "") String text,
                                                 @RequestParam(required = false) List<Integer> categories,
                                                 @RequestParam(required = false) Boolean paid,
                                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
@@ -30,10 +31,10 @@ public class EventController {
                                                 @RequestParam(defaultValue = "false") Boolean onlyAvailable,
                                                 @RequestParam(defaultValue = "EVENT_DATE") String sort,
                                                 @PositiveOrZero @RequestParam(name = "from", defaultValue = "0") int from,
-                                                @Positive @RequestParam(name = "size", defaultValue = "10") int size,
-                                                HttpServletRequest request) {
-        return eventService.getEventByFilter(text, categories, paid,
-                rangeStart, rangeEnd, onlyAvailable, sort, from, size, request);
+                                                @Positive @RequestParam(name = "size", defaultValue = "10") int size
+                                                ) {
+        return eventService.getEventByFilter(request, text, categories, paid,
+                rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
     @GetMapping("/{id}")

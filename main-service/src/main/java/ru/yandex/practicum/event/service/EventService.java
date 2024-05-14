@@ -10,9 +10,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface EventService {
-    List<EventShortDto> getEventByFilter(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart,
-                                         LocalDateTime rangeEnd, Boolean onlyAvailable, String sort,
-                                         int from, int size, HttpServletRequest request);
+    List<EventShortDto> getEventByFilter(HttpServletRequest request, String text, List<Integer> categories,
+                                         Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                         Boolean onlyAvailable, String sort, int from, int size);
 
     List<EventFullDto> getEventsForAdmin(List<Integer> users, List<EventState> states, List<Integer> categories,
                                          LocalDateTime rangeStart, LocalDateTime rangeEnd, int from, int size);

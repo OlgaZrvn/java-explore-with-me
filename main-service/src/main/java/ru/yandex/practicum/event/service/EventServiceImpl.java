@@ -51,9 +51,10 @@ public class EventServiceImpl implements EventService {
     private final StatsClient statsClient;
 
     @Override
-    public List<EventShortDto> getEventByFilter(String text, List<Integer> categories, Boolean paid,
-                                              LocalDateTime rangeStart, LocalDateTime rangeEnd, Boolean onlyAvailable,
-                                              String sort, int from, int size, HttpServletRequest request) {
+    public List<EventShortDto> getEventByFilter(HttpServletRequest request, String text, List<Integer> categories,
+                                                Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                                Boolean onlyAvailable, String sort, int from, int size) {
+        log.info("size = {}", size);
         Pageable pageable = PageRequest.of(from, size);
 
         List<Event> events;
@@ -88,7 +89,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByIdOnlyPublic(id).orElseThrow(() ->
                 new NotFoundException("Событие не найдено"));
         sendStatistic(request.getRemoteAddr(), request.getRequestURI());
-        event.setViews(getStatistic(event, true));
+        event.setViews(getStatistic(event, true) + 1);
         return eventMapper.toEventFullDto(event);
     }
 

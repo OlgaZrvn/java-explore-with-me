@@ -11,46 +11,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class EventMapper2 {
 
-    private final CategoryMapper categoryMapper;
-    private final UserMapper userMapper;
-
- /*   public static EventFullDto toEventFullDto(Event event) {
-        return new EventFullDto(
-                event.getId(),
-                event.getAnnotation(),
-                categoryMapper.toCategoryDto(event.getCategory()),
-                event.getConfirmedRequests(),
-                event.getCreatedOn(),
-                event.getDescription(),
-                event.getEventDate(),
-                userMapper.toUserShortDto(event.getInitiator()),
-                event.getLocation(),
-                event.getPaid(),
-                event.getParticipantLimit(),
-                event.getPublishedOn(),
-                event.getRequestModeration(),
-                event.getState(),
-                event.getTitle(),
-                event.getViews()
-        );
-    }
-
-    public static EventShortDto toEventShortDto(Event event) {
-        return new EventShortDto(
-                event.getId(),
-                event.getAnnotation(),
-                categoryMapper.toCategoryDto(event.getCategory()),
-                event.getConfirmedRequests(),
-                event.getEventDate(),
-                userMapper.toUserShortDto(event.getInitiator()),
-                event.getPaid(),
-                event.getTitle(),
-                event.getViews()
-        );
-    }
-
-  */
-
     public static Event toEventFromNewEventDto(NewEventDto newEventDto, User user, Category category) {
         if (newEventDto.getPaid() == null) {
             newEventDto.setPaid(false);
