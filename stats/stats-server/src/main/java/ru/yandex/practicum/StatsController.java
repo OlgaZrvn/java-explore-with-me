@@ -1,6 +1,7 @@
 package ru.yandex.practicum;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -16,6 +17,7 @@ import java.util.List;
 public class StatsController {
     private final StatsService statsService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/hit")
     public EndpointHit addHit(@RequestBody @Valid EndpointHit endpointHit) {
         return statsService.addHit(endpointHit);
