@@ -34,7 +34,7 @@ public class AdminEventController {
     }
 
     @PatchMapping("/{eventId}")
-    public EventFullDto updateEventAdmin(@PathVariable Integer eventId,
+    public EventFullDto updateEventAdmin(@PathVariable("eventId") Integer eventId,
                                          @Valid @RequestBody UpdateEventAdminRequest dto) {
         return eventService.updateEventByIdAdmin(eventId, dto);
     }

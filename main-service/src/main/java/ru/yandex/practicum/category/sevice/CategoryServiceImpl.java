@@ -47,9 +47,6 @@ public class CategoryServiceImpl implements CategoryService {
         if (categoryRepository.existsCategoryByName(newCategoryDto.getName())) {
             throw new ConflictException("Категория уже существует");
         }
-        if (newCategoryDto.getName().isBlank()) {
-            throw new ValidationException("Имя категории не может быть пустым");
-        }
         return categoryMapper.toCategoryDto(categoryRepository.save(categoryMapper.toCategory(newCategoryDto)));
     }
 

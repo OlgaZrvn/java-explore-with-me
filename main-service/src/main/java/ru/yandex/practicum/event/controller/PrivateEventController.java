@@ -35,27 +35,27 @@ public class PrivateEventController {
     }
 
     @GetMapping("/{eventId}")
-    public EventFullDto getEventByUserId(@PathVariable Integer userId,
-                                         @PathVariable Integer eventId) {
+    public EventFullDto getEventByUserId(@PathVariable("userId") Integer userId,
+                                         @PathVariable("eventId") Integer eventId) {
         return eventService.getEventByUserId(userId, eventId);
     }
 
     @PatchMapping("/{eventId}")
-    public EventFullDto updateEventByUserId(@PathVariable Integer userId,
-                                            @PathVariable Integer eventId,
+    public EventFullDto updateEventByUserId(@PathVariable("userId") Integer userId,
+                                            @PathVariable("eventId") Integer eventId,
                                             @Valid @RequestBody UpdateEventUserRequest event) {
         return eventService.updateEventByUserId(userId, eventId, event);
     }
 
     @GetMapping("/{eventId}/requests")
-    public List<ParticipationRequestDto> getAllRequestsByUserAndEvent(@PathVariable Integer userId,
-                                                                      @PathVariable Integer eventId) {
+    public List<ParticipationRequestDto> getAllRequestsByUserAndEvent(@PathVariable("userId") Integer userId,
+                                                                      @PathVariable("eventId") Integer eventId) {
         return eventService.getAllRequestsByUserAndEvent(userId, eventId);
     }
 
     @PatchMapping("/{eventId}/requests")
-    public EventRequestStatusUpdateResult updateEventRequestStatus(@PathVariable Integer userId,
-                                                                   @PathVariable Integer eventId,
+    public EventRequestStatusUpdateResult updateEventRequestStatus(@PathVariable("userId") Integer userId,
+                                                                   @PathVariable("eventId") Integer eventId,
                                                                    @RequestBody EventRequestStatusUpdateRequest request) {
         return eventService.updateEventRequestStatus(userId, eventId, request);
     }

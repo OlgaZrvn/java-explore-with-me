@@ -38,7 +38,7 @@ public class EventController {
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getEventById(@PathVariable Integer id, HttpServletRequest request) {
+    public EventFullDto getEventById(@PathVariable("id") Integer id, HttpServletRequest request) {
         return eventService.getPublicEventById(id, request);
     }
 }

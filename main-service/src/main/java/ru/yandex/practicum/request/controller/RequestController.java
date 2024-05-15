@@ -17,19 +17,19 @@ public class RequestController {
     private final RequestService requestService;
 
     @GetMapping
-    public List<ParticipationRequestDto> getRequestsByUserId(@PathVariable Integer userId) {
+    public List<ParticipationRequestDto> getRequestsByUserId(@PathVariable("userId") Integer userId) {
         return requestService.getRequestsByUserId(userId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ParticipationRequestDto addNewRequest(@PathVariable Integer userId,
+    public ParticipationRequestDto addNewRequest(@PathVariable("userId") Integer userId,
                                                  @RequestParam Integer eventId) {
         return requestService.addNewRequest(userId, eventId);
     }
 
     @PatchMapping("/{requestId}/cancel")
-    public ParticipationRequestDto updateRequest(@PathVariable Integer userId,
+    public ParticipationRequestDto updateRequest(@PathVariable("userId") Integer userId,
                                                  @PathVariable Integer requestId) {
         return requestService.updateRequest(userId, requestId);
     }
