@@ -1,6 +1,7 @@
 package ru.yandex.practicum.event.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.event.*;
@@ -14,6 +15,7 @@ import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(path = "/users/{userId}/events")
@@ -31,6 +33,7 @@ public class PrivateEventController {
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addNewEvent(@PathVariable Integer userId,
                                     @Valid @RequestBody NewEventDto dto) {
+        log.info("Запрос на создание события");
         return eventService.addNewEvent(userId, dto);
     }
 
