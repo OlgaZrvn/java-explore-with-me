@@ -28,8 +28,6 @@ class StatsServiceImplTest {
 
     private final LocalDateTime end = LocalDateTime.now().minusMonths(11);
 
-    private final LocalDateTime wrongEnd = LocalDateTime.now().minusMonths(13);
-
     private final EasyRandom generator = new EasyRandom();
 
     @BeforeEach
