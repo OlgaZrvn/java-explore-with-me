@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.comment.Comment;
 import ru.yandex.practicum.comment.CommentDto;
 import ru.yandex.practicum.comment.CommentFullDto;
-import ru.yandex.practicum.comment.CommentMapper2;
+import ru.yandex.practicum.comment.CommentMapper;
 import ru.yandex.practicum.comment.repository.CommentRepository;
 import ru.yandex.practicum.event.Event;
 import ru.yandex.practicum.event.EventState;
@@ -49,12 +49,13 @@ public class CommentServiceImpl implements CommentService {
                 throw new ConflictException("Пользватель не участник и не автор события");
             }
         }
-        commentRepository.findByEventIdAndAuthorId(eventId, userId).orElseThrow(() ->
-                new ConflictException("Комментарий уже существует"));
-        Comment comment = CommentMapper2.toComment(commentDto);
-        comment.setAuthor(user);
-        comment.setEvent(event);
-        return CommentMapper2.toCommentFullDto(commentRepository.save(comment));
+        if (commentRepository.existsCommentByEventIdAndAuthorId(eventId, userId)) {
+            throw new ConflictException("Комментарий уже существует");
+        }
+        Comment comment = CommentMapper.toComment(commentDto, user, event);
+        CommentFullDto savedComment = CommentMapper.toCommentFullDto(commentRepository.save(comment));
+        log.info("Создан комментарий с id = {}", savedComment.getId());
+        return savedComment;
     }
 
     @Override
@@ -71,7 +72,7 @@ public class CommentServiceImpl implements CommentService {
         if (newText != null && !newText.isEmpty()) {
             comment.setText(newText);
         }
-        return CommentMapper2.toCommentFullDto(comment);
+        return CommentMapper.toCommentFullDto(comment);
     }
 
     @Override
@@ -99,6 +100,6 @@ public class CommentServiceImpl implements CommentService {
         eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие не найдено"));
         List<Comment> comments = commentRepository.findAllByEventIdOrderByCreatedOnDesc(eventId,
                 PageRequest.of(from, size));
-        return comments.stream().map(CommentMapper2::toCommentFullDto).collect(Collectors.toList());
+        return comments.stream().map(CommentMapper::toCommentFullDto).collect(Collectors.toList());
     }
 }

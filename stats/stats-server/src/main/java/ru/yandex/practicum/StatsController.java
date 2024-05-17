@@ -3,6 +3,7 @@ package ru.yandex.practicum;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.exception.ValidationException;
 
 import javax.validation.Valid;
 import java.net.URLDecoder;
