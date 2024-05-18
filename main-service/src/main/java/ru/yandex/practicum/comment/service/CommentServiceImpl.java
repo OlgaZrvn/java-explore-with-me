@@ -37,20 +37,20 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public CommentFullDto addComment(Integer userId, Integer eventId, CommentDto commentDto) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие не найдено"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User was not found"));
+        Event event = eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event was not found"));
         if (event.getState() != EventState.PUBLISHED) {
-            throw new ConflictException("Событие еще не опубликовано");
+            throw new ConflictException("Event is not published");
         }
         if (!Objects.equals(user.getId(), event.getInitiator().getId())) {
             List<Request> requests = requestRepository.findAllByEventIdAndStatusAndRequesterId(eventId,
                     RequestStatus.CONFIRMED, userId);
             if (requests.isEmpty()) {
-                throw new ConflictException("Пользватель не участник и не автор события");
+                throw new ConflictException("User is not an author");
             }
         }
         if (commentRepository.existsCommentByEventIdAndAuthorId(eventId, userId)) {
-            throw new ConflictException("Комментарий уже существует");
+            throw new ConflictException("Comment already exists");
         }
         Comment comment = CommentMapper.toComment(commentDto, user, event);
         CommentFullDto savedComment = CommentMapper.toCommentFullDto(commentRepository.save(comment));
@@ -62,11 +62,11 @@ public class CommentServiceImpl implements CommentService {
     @Transactional
     public CommentFullDto updateComment(Integer commentId, Integer userId, CommentDto commentDto) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new NotFoundException("Комментарий не найден"));
+                new NotFoundException("Comment was not found"));
         userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException("Пользователь не найден"));
+                new NotFoundException("User was not found"));
         if (!Objects.equals(comment.getAuthor().getId(), userId)) {
-            throw new ConflictException("Пользователь не является автором комментария");
+            throw new ConflictException("User is not an author");
         }
         String newText = commentDto.getText();
         if (newText != null && !newText.isEmpty()) {
@@ -78,11 +78,11 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteCommentById(Integer commentId, Integer userId) {
         Comment comment = commentRepository.findById(commentId).orElseThrow(() ->
-                new NotFoundException("Комментарий не найден"));
+                new NotFoundException("Comment was not found"));
         userRepository.findById(userId).orElseThrow(() ->
-                new NotFoundException("Пользователь не найден"));
+                new NotFoundException("User was not found"));
         if (!Objects.equals(comment.getAuthor().getId(), userId)) {
-            throw new ConflictException("Пользователь не является автором комментария");
+            throw new ConflictException("User is not an author");
         }
         commentRepository.deleteById(commentId);
     }
@@ -90,14 +90,14 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteCommentByAdmin(Integer commentId) {
         commentRepository.findById(commentId).orElseThrow(() ->
-                new NotFoundException("Комментарий не найден"));
+                new NotFoundException("Comment was not found"));
         commentRepository.deleteById(commentId);
     }
 
     @Override
     @Transactional
     public List<CommentFullDto> getAllCommentsByEventId(Integer eventId, int from, int size) {
-        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Событие не найдено"));
+        eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event was not found"));
         List<Comment> comments = commentRepository.findAllByEventIdOrderByCreatedOnDesc(eventId,
                 PageRequest.of(from, size));
         return comments.stream().map(CommentMapper::toCommentFullDto).collect(Collectors.toList());
